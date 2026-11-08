@@ -1,0 +1,11 @@
+[package]
+name = "znotes-core"
+description = "Encrypted vault, repositories and search for znotes"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+rusqlite = { version = "0.41", features = ["bundled-sqlcipher-vendored-openssl"] }

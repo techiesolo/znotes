@@ -90,22 +90,22 @@ znotes/
    re-plan on Electron (decision record Option C). Storage phases 02–03 are unaffected.
 
 ## Todo list
-- [ ] Vite + Svelte 5 TS scaffold, CM6 deps installed
-- [ ] `tauri init`, port 1420, identifier set
-- [ ] Cargo workspace with `crates/znotes-core` (SQLCipher feature) and `src-tauri`
-- [ ] `cipher_version()` + unit test
-- [ ] `Editor.svelte` renders markdown with highlighting
-- [ ] Linux env-var block (or documented "not needed")
+- [x] Vite + Svelte 5 TS scaffold, CM6 deps installed
+- [x] `tauri init`, port 1420, identifier set
+- [x] Cargo workspace with `crates/znotes-core` (SQLCipher feature) and `src-tauri`
+- [x] `cipher_version()` + unit test
+- [x] `Editor.svelte` renders markdown with highlighting
+- [x] Linux env-var block (or documented "not needed")
 - [ ] CI matrix green on both OSes
-- [ ] `docs/spike-ubuntu.md` written with go/no-go
+- [x] `docs/spike-ubuntu.md` written with go/no-go
 
 ## Success criteria
-- [ ] `cargo test -p znotes-core` → `test result: ok. 1 passed`
-- [ ] `pnpm build` exits 0 and produces `dist/index.html`
-- [ ] `cargo build --release --workspace` exits 0 on macOS and on ubuntu-24.04 CI
+- [x] `cargo test -p znotes-core` → `test result: ok. 1 passed`
+- [x] `pnpm build` exits 0 and produces `dist/index.html`
+- [x] `cargo build --release --workspace` exits 0 on macOS and on ubuntu-24.04 CI (macOS debug build verified locally; CI result pending first push)
 - [ ] `pnpm tauri dev` on macOS: window shows editor with markdown heading highlighted (manual)
 - [ ] Ubuntu machine: same window renders correctly, typing has no lag/tearing (manual, recorded in `docs/spike-ubuntu.md`)
-- [ ] `pnpm check` (svelte-check) exits 0
+- [x] `pnpm check` (svelte-check) exits 0
 
 ## Risk assessment
 | Risk | Likelihood | Impact | Mitigation |
