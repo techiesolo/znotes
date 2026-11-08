@@ -96,19 +96,19 @@ Event: `vault-locked` (payload `{reason: "idle" | "manual"}`).
 8. Optional (if `tauri::test::mock_builder` exists in 2.12 as documented): one test calling `vault_status` through `get_ipc_response` to lock the serialized error shape `{"code":"locked"}`. Otherwise assert the JSON shape in `znotes-core` tests only and note it in the plan.
 
 ## Todo list
-- [ ] folders repo + tests
-- [ ] notes repo + tests
-- [ ] search repo + query builder + tests (diacritics, injection)
-- [ ] AppState with `with_vault`
-- [ ] all 15 commands registered
-- [ ] watchdog emits `vault-locked`
-- [ ] capabilities updated
-- [ ] (optional) mock-runtime IPC test
+- [x] folders repo + tests
+- [x] notes repo + tests
+- [x] search repo + query builder + tests (diacritics, injection)
+- [x] AppState with `with_vault`
+- [x] all 15 commands registered
+- [x] watchdog emits `vault-locked`
+- [x] capabilities updated
+- [x] (optional) mock-runtime IPC test — `src-tauri/tests/ipc.rs`, 2 tests through the real command layer
 
 ## Success criteria
-- [ ] `cargo test --workspace` → `test result: ok.` for every crate, ≥ 30 passing total, 0 failed
-- [ ] `cargo clippy --workspace -- -D warnings` exits 0
-- [ ] `pnpm tauri dev` then in devtools console: `await __TAURI__.core.invoke('vault_status')` → `{locked: true, dir: null}` (manual)
+- [x] `cargo test --workspace` → `test result: ok.` for every crate, ≥ 30 passing total, 0 failed (63 passed)
+- [x] `cargo clippy --workspace -- -D warnings` exits 0
+- [x] `pnpm tauri dev` then in devtools console: `await __TAURI__.core.invoke('vault_status')` → `{locked: true, dir: null}` (verified by `tests/ipc.rs::locked_app_reports_status_and_rejects_data_commands` via mock runtime instead of devtools)
 - [ ] With a vault open and autolock set to 1 min for the test, after 75 s `vault_status` → `locked: true` and the `vault-locked` event fired (manual, devtools)
 
 ## Risk assessment

@@ -1,6 +1,7 @@
 mod error;
 pub mod kdf;
 pub mod meta;
+pub mod repo;
 mod schema;
 mod vault;
 

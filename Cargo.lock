@@ -4536,6 +4536,8 @@ dependencies = [
  "serde_json",
  "tauri",
  "tauri-build",
+ "tempfile",
+ "znotes-core",
 ]
 
 [[package]]
