@@ -1,11 +1,12 @@
 <script lang="ts">
   import { open as openDialog } from "@tauri-apps/plugin-dialog";
   import { vault } from "../state/vault.svelte";
+  import { settings } from "../state/settings.svelte";
 
   type Mode = "open" | "create";
 
   let mode = $state<Mode>("open");
-  let dir = $state(vault.dir ?? "");
+  let dir = $state(vault.dir ?? settings.current.last_vault_dir ?? "");
   let password = $state("");
   let confirm = $state("");
   let localError = $state<string | null>(null);

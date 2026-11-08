@@ -1,6 +1,6 @@
 <script lang="ts">
   import { workspace } from "../state/workspace.svelte";
-  import { vault } from "../state/vault.svelte";
+  import Menu from "./Menu.svelte";
 
   let confirmingDelete = $state(false);
 
@@ -44,7 +44,7 @@
   {:else}
     <span class="placeholder">Select or create a note</span>
   {/if}
-  <button type="button" class="lock" title="Lock vault (⌘/Ctrl+L)" onclick={() => vault.lock()}>🔒 Lock</button>
+  <Menu />
 </header>
 
 <style>

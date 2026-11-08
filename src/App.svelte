@@ -1,13 +1,18 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { vault } from "./lib/state/vault.svelte";
+  import { settings } from "./lib/state/settings.svelte";
+  import { workspace } from "./lib/state/workspace.svelte";
   import Unlock from "./lib/components/Unlock.svelte";
   import Workspace from "./lib/components/Workspace.svelte";
 
   onMount(() => {
     let unlisten: (() => void) | undefined;
     vault.listenForLock().then((fn) => (unlisten = fn));
-    vault.refresh();
+    settings.load().then(() => {
+      workspace.preview = settings.current.preview;
+      return vault.refresh();
+    });
     return () => unlisten?.();
   });
 </script>

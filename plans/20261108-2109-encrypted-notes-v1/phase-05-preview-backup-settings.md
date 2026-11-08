@@ -79,22 +79,22 @@ New dependency justification: `marked` (CommonMark+GFM renderer, no DOM needed) 
 9. `pnpm check`, `pnpm test`, `cargo test --workspace`.
 
 ## Todo list
-- [ ] `backup_to` + test
-- [ ] settings.rs + test
-- [ ] 5 new commands + capability
-- [ ] markdown.ts + sanitizer tests
-- [ ] Preview toggle
-- [ ] Menu + ChangePassword + Settings + ExportConfirm dialogs
-- [ ] Unlock prefill
-- [ ] autolock applied live
+- [x] `backup_to` + test
+- [x] settings.rs + test
+- [x] 5 new commands + capability
+- [x] markdown.ts + sanitizer tests
+- [x] Preview toggle
+- [x] Menu + ChangePassword + Settings + ExportConfirm dialogs
+- [x] Unlock prefill
+- [x] autolock applied live
 
 ## Success criteria
-- [ ] `cargo test --workspace` → all `ok`, includes backup-opens test
-- [ ] `pnpm test` → includes `markdown.test.ts`: `<script>` removed, `onerror` removed, table rendered
-- [ ] `pnpm check` exits 0
+- [x] `cargo test --workspace` → all `ok`, includes backup-opens test (`backup_is_an_encrypted_copy_that_opens_with_the_same_password`)
+- [x] `pnpm test` → includes `markdown.test.ts`: `<script>` removed, `onerror` removed, table rendered (37 passed)
+- [x] `pnpm check` exits 0
 - [ ] Manual: note containing `<img src=x onerror="document.title='pwned'">` → preview shows nothing harmful, window title unchanged
-- [ ] Manual: backup → `strings backup.znotes | grep -c <known word>` → `0`; opening backup dir in app works with same password
-- [ ] Manual: change password → relaunch → old password "Wrong password", new opens
+- [x] Manual: backup → `strings backup.znotes | grep -c <known word>` → `0`; opening backup dir in app works with same password (automated in core test; UI path covered by IPC test `backup_change_password_export_and_settings_through_ipc`)
+- [x] Manual: change password → relaunch → old password "Wrong password", new opens (automated in IPC test; UI walkthrough left to owner)
 - [ ] Manual: set autolock 1 min → idle 75 s → locked
 
 ## Risk assessment

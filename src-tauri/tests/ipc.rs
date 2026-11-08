@@ -126,3 +126,95 @@ fn full_round_trip_through_ipc() {
     let note_again = invoke(&webview, "note_get", json!({ "id": note_id })).unwrap();
     assert_eq!(note_again["body"], "tiếng việt");
 }
+
+#[test]
+fn backup_change_password_export_and_settings_through_ipc() {
+    let (_app, webview) = app();
+    let dir = tempfile::tempdir().unwrap();
+    let dir_str = dir.path().display().to_string();
+    invoke(
+        &webview,
+        "vault_create",
+        json!({ "dir": dir_str, "password": "pw" }),
+    )
+    .unwrap();
+    let note = invoke(
+        &webview,
+        "note_create",
+        json!({ "folderId": null, "title": "T" }),
+    )
+    .unwrap();
+    let id = note["id"].as_i64().unwrap();
+    invoke(
+        &webview,
+        "note_update",
+        json!({ "id": id, "title": "T", "body": "# hello\n" }),
+    )
+    .unwrap();
+
+    let backup_dir = tempfile::tempdir().unwrap();
+    let paths = invoke(
+        &webview,
+        "vault_backup",
+        json!({ "destDir": backup_dir.path().display().to_string() }),
+    )
+    .unwrap();
+    assert!(std::path::Path::new(paths["db"].as_str().unwrap()).exists());
+
+    let export = tempfile::tempdir().unwrap();
+    let bad = invoke(
+        &webview,
+        "note_export_md",
+        json!({ "id": id, "destPath": export.path().join("x.txt").display().to_string() }),
+    )
+    .unwrap_err();
+    assert_eq!(bad["code"], "invalid_input");
+    let md_path = export.path().join("x.md");
+    invoke(
+        &webview,
+        "note_export_md",
+        json!({ "id": id, "destPath": md_path.display().to_string() }),
+    )
+    .unwrap();
+    assert_eq!(std::fs::read_to_string(md_path).unwrap(), "# hello\n");
+
+    let wrong = invoke(
+        &webview,
+        "vault_change_password",
+        json!({ "current": "nope", "new": "pw2" }),
+    )
+    .unwrap_err();
+    assert_eq!(wrong["code"], "wrong_password");
+    invoke(
+        &webview,
+        "vault_change_password",
+        json!({ "current": "pw", "new": "pw2" }),
+    )
+    .unwrap();
+    invoke(&webview, "vault_lock", json!({})).unwrap();
+    assert_eq!(
+        invoke(
+            &webview,
+            "vault_open",
+            json!({ "dir": dir_str, "password": "pw" })
+        )
+        .unwrap_err()["code"],
+        "wrong_password"
+    );
+    invoke(
+        &webview,
+        "vault_open",
+        json!({ "dir": dir_str, "password": "pw2" }),
+    )
+    .unwrap();
+
+    let defaults = invoke(&webview, "settings_get", json!({})).unwrap();
+    assert_eq!(defaults["autolock_minutes"], 10);
+    let bad_settings = invoke(
+        &webview,
+        "settings_set",
+        json!({ "settings": { "autolock_minutes": 0, "last_vault_dir": null, "preview": false } }),
+    )
+    .unwrap_err();
+    assert_eq!(bad_settings["code"], "invalid_input");
+}

@@ -225,3 +225,41 @@ fn default_params_open_time_is_reasonable() {
     println!("default-params open took {elapsed:?}");
     assert!(elapsed.as_secs_f64() < 5.0, "open took {elapsed:?}");
 }
+
+#[test]
+fn backup_is_an_encrypted_copy_that_opens_with_the_same_password() {
+    let dir = tempfile::tempdir().unwrap();
+    let dest = tempfile::tempdir().unwrap();
+    let vault = Vault::create(dir.path(), "pw", params()).unwrap();
+    vault
+        .conn()
+        .execute(
+            "INSERT INTO notes (title, body, created_at, updated_at) VALUES ('t', 'BACKUP_MARKER_body', 0, 0)",
+            [],
+        )
+        .unwrap();
+    let paths = vault.backup_to(dest.path(), "20261108-2200").unwrap();
+    assert!(paths.db.ends_with("znotes-backup-20261108-2200.znotes"));
+    assert!(
+        paths
+            .meta
+            .ends_with("znotes-backup-20261108-2200.meta.json")
+    );
+    let bytes = fs::read(&paths.db).unwrap();
+    assert!(!bytes.windows(13).any(|w| w == b"BACKUP_MARKER"));
+
+    let restore = tempfile::tempdir().unwrap();
+    fs::copy(&paths.db, restore.path().join(DB_FILE)).unwrap();
+    fs::copy(&paths.meta, restore.path().join(META_FILE)).unwrap();
+    let restored = Vault::open(restore.path(), "pw").unwrap();
+    let body: String = restored
+        .conn()
+        .query_row("SELECT body FROM notes", [], |r| r.get(0))
+        .unwrap();
+    assert_eq!(body, "BACKUP_MARKER_body");
+
+    assert!(matches!(
+        vault.backup_to(dest.path(), "20261108-2200"),
+        Err(Error::AlreadyExists(_))
+    ));
+}

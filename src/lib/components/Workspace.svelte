@@ -7,6 +7,8 @@
   import TitleBar from "./TitleBar.svelte";
   import Editor from "./Editor.svelte";
   import Search from "./Search.svelte";
+  import Preview from "./Preview.svelte";
+  import { settings } from "../state/settings.svelte";
 
   let search: Search | undefined = $state();
 
@@ -23,6 +25,10 @@
     } else if (key === "l") {
       event.preventDefault();
       vault.lock();
+    } else if (key === "e") {
+      event.preventDefault();
+      workspace.togglePreview();
+      void settings.save({ preview: workspace.preview });
     }
   }
 
@@ -54,12 +60,17 @@
       <p class="error" role="alert">{workspace.error}</p>
     {/if}
     {#if workspace.current}
-      {#key workspace.current.id}
-        <Editor
-          value={workspace.current.body}
-          onchange={(body) => workspace.updateDraft(workspace.current?.title ?? "", body)}
-        />
-      {/key}
+      <div class="panes" class:split={workspace.preview}>
+        {#key workspace.current.id}
+          <Editor
+            value={workspace.current.body}
+            onchange={(body) => workspace.updateDraft(workspace.current?.title ?? "", body)}
+          />
+        {/key}
+        {#if workspace.preview}
+          <Preview source={workspace.current.body} />
+        {/if}
+      </div>
     {:else}
       <div class="empty">
         <p>Select a note, or press <kbd>⌘/Ctrl</kbd>+<kbd>N</kbd> to create one.</p>
@@ -86,6 +97,15 @@
     flex-direction: column;
     min-width: 0;
     overflow: hidden;
+  }
+  .panes {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .panes.split {
+    grid-template-columns: 1fr 1fr;
   }
   .error {
     margin: 0;

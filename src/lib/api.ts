@@ -37,6 +37,17 @@ export interface SearchHit {
   snippet: string;
 }
 
+export interface Settings {
+  autolock_minutes: number;
+  last_vault_dir: string | null;
+  preview: boolean;
+}
+
+export interface BackupPaths {
+  db: string;
+  meta: string;
+}
+
 export interface AppError {
   code: string;
   message: string;
@@ -79,6 +90,14 @@ export const api = {
   noteDelete: (id: number) => invoke<void>("note_delete", { id }),
 
   search: (query: string, limit = 50) => invoke<SearchHit[]>("search", { query, limit }),
+
+  vaultBackup: (destDir: string) => invoke<BackupPaths>("vault_backup", { destDir }),
+  vaultChangePassword: (current: string, next: string) =>
+    invoke<void>("vault_change_password", { current, new: next }),
+  noteExportMd: (id: number, destPath: string) => invoke<void>("note_export_md", { id, destPath }),
+
+  settingsGet: () => invoke<Settings>("settings_get"),
+  settingsSet: (settings: Settings) => invoke<Settings>("settings_set", { settings }),
 };
 
 export interface LockedPayload {

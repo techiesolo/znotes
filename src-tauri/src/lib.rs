@@ -1,8 +1,10 @@
 mod commands;
+pub mod settings;
 pub mod state;
 mod watchdog;
 
 use state::AppState;
+use tauri::Manager;
 
 #[cfg(target_os = "linux")]
 fn set_webkitgtk_env_before_threads_start() {
@@ -33,6 +35,11 @@ pub fn configure<R: tauri::Runtime>(builder: tauri::Builder<R>) -> tauri::Builde
             commands::notes::note_move,
             commands::notes::note_delete,
             commands::search::search,
+            commands::vault::vault_backup,
+            commands::vault::vault_change_password,
+            commands::vault::note_export_md,
+            commands::settings::settings_get,
+            commands::settings::settings_set,
         ])
 }
 
@@ -41,6 +48,7 @@ pub fn run() {
     configure(tauri::Builder::default())
         .plugin(tauri_plugin_dialog::init())
         .setup(|app| {
+            commands::settings::load_and_apply(app.handle(), &app.state::<AppState>());
             watchdog::spawn(app.handle().clone());
             Ok(())
         })

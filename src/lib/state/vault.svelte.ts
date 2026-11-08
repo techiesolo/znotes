@@ -1,5 +1,6 @@
 import { api, errorMessage, isAppError, onVaultLocked } from "../api";
 import { workspace } from "./workspace.svelte";
+import { settings } from "./settings.svelte";
 
 export type VaultUiStatus = "loading" | "locked" | "open";
 
@@ -62,6 +63,9 @@ class VaultState {
       this.lockReason = null;
       this.status = "open";
       await workspace.load();
+      if (settings.current.last_vault_dir !== info.dir) {
+        void settings.save({ last_vault_dir: info.dir });
+      }
       return true;
     } catch (err) {
       this.error = isAppError(err) ? (FRIENDLY[err.code] ?? err.message) : errorMessage(err);

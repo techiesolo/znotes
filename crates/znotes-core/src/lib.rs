@@ -9,4 +9,4 @@ pub use error::{Error, Result};
 pub use kdf::KdfParams;
 pub use meta::{DB_FILE, META_FILE, VaultMeta};
 pub use schema::SCHEMA_VERSION;
-pub use vault::Vault;
+pub use vault::{BackupPaths, Vault};

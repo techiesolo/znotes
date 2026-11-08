@@ -1,5 +1,5 @@
 import { clearMocks, mockIPC } from "@tauri-apps/api/mocks";
-import type { Folder, Note, NoteSummary, SearchHit } from "./api";
+import type { Folder, Note, NoteSummary, SearchHit, Settings } from "./api";
 
 export interface Call {
   cmd: string;
@@ -12,6 +12,10 @@ export interface FakeBackend {
   folders: Map<number, Folder>;
   locked: boolean;
   searchHits: SearchHit[];
+  settings: Settings;
+  exports: { id: number; destPath: string }[];
+  backups: string[];
+  password: string;
   failNext: Partial<Record<string, { code: string; message: string }>>;
 }
 
@@ -42,6 +46,10 @@ export function installFakeBackend(seed: { notes?: Note[]; folders?: Folder[] } 
     folders: new Map((seed.folders ?? []).map((f) => [f.id, f])),
     locked: false,
     searchHits: [],
+    settings: { autolock_minutes: 10, last_vault_dir: null, preview: false },
+    exports: [],
+    backups: [],
+    password: "pw",
     failNext: {},
   };
   let nextId = 1000;
@@ -57,6 +65,16 @@ export function installFakeBackend(seed: { notes?: Note[]; folders?: Folder[] } 
     }
     if (cmd.startsWith("plugin:event|")) return 1;
     if (cmd === "plugin:dialog|open") return "/picked/dir";
+    if (cmd === "plugin:dialog|save") return "/picked/export.md";
+    if (cmd === "settings_get") return backend.settings;
+    if (cmd === "settings_set") {
+      const next = args.settings as Settings;
+      if (next.autolock_minutes < 1 || next.autolock_minutes > 120) {
+        throw { code: "invalid_input", message: "autolock must be between 1 and 120 minutes" };
+      }
+      backend.settings = next;
+      return next;
+    }
     if (cmd === "vault_status") return { locked: backend.locked, dir: backend.locked ? null : "/v" };
     if (cmd === "vault_open" || cmd === "vault_create") {
       backend.locked = false;
@@ -68,6 +86,16 @@ export function installFakeBackend(seed: { notes?: Note[]; folders?: Folder[] } 
     }
     if (backend.locked) throw { code: "locked", message: "vault is locked" };
     switch (cmd) {
+      case "vault_backup":
+        backend.backups.push(args.destDir as string);
+        return { db: `${args.destDir}/znotes-backup-x.znotes`, meta: `${args.destDir}/znotes-backup-x.meta.json` };
+      case "vault_change_password":
+        if (args.current !== backend.password) throw { code: "wrong_password", message: "wrong password" };
+        backend.password = args.new as string;
+        return null;
+      case "note_export_md":
+        backend.exports.push({ id: args.id as number, destPath: args.destPath as string });
+        return null;
       case "folder_list":
         return [...backend.folders.values()];
       case "folder_create": {

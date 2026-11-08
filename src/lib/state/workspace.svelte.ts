@@ -13,6 +13,7 @@ class WorkspaceState {
   current = $state<Note | null>(null);
   saveState = $state<SaveState>("idle");
   error = $state<string | null>(null);
+  preview = $state(false);
 
   private dirty = false;
   private saving: Promise<void> | null = null;
@@ -155,6 +156,10 @@ class WorkspaceState {
     this.current = null;
     this.saveState = "idle";
     this.error = null;
+  }
+
+  togglePreview(): void {
+    this.preview = !this.preview;
   }
 
   private async guard<T>(action: () => Promise<T>): Promise<T | undefined> {

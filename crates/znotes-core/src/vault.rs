@@ -11,6 +11,12 @@ use crate::meta::{self, VaultMeta};
 use crate::schema;
 use crate::{Error, Result};
 
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize)]
+pub struct BackupPaths {
+    pub db: String,
+    pub meta: String,
+}
+
 pub struct Vault {
     conn: Connection,
     dir: PathBuf,
@@ -90,6 +96,25 @@ impl Vault {
 
     pub fn dir(&self) -> &Path {
         &self.dir
+    }
+
+    pub fn backup_to(&self, dest_dir: &Path, stamp: &str) -> Result<BackupPaths> {
+        let journal = self.dir.join(format!("{}-journal", meta::DB_FILE));
+        if journal.exists() {
+            return Err(Error::invalid("a write is in progress; try again"));
+        }
+        fs::create_dir_all(dest_dir)?;
+        let db = dest_dir.join(format!("znotes-backup-{stamp}.znotes"));
+        let meta_file = dest_dir.join(format!("znotes-backup-{stamp}.meta.json"));
+        if db.exists() || meta_file.exists() {
+            return Err(Error::AlreadyExists(db.display().to_string()));
+        }
+        fs::copy(meta::db_path(&self.dir), &db)?;
+        fs::copy(meta::meta_path(&self.dir), &meta_file)?;
+        Ok(BackupPaths {
+            db: db.display().to_string(),
+            meta: meta_file.display().to_string(),
+        })
     }
 
     pub fn conn(&self) -> &Connection {
