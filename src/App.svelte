@@ -1,16 +1,30 @@
 <script lang="ts">
-  import Editor from "./lib/components/Editor.svelte";
+  import { onMount } from "svelte";
+  import { vault } from "./lib/state/vault.svelte";
+  import Unlock from "./lib/components/Unlock.svelte";
+  import Workspace from "./lib/components/Workspace.svelte";
 
-  let text = $state("# znotes\n\nSpike: Tauri v2 + Svelte 5 + CodeMirror 6.\n\n- [ ] renders on macOS\n- [ ] renders on Ubuntu\n");
+  onMount(() => {
+    let unlisten: (() => void) | undefined;
+    vault.listenForLock().then((fn) => (unlisten = fn));
+    vault.refresh();
+    return () => unlisten?.();
+  });
 </script>
 
-<main>
-  <Editor bind:value={text} />
-</main>
+{#if vault.status === "loading"}
+  <div class="loading">Loading…</div>
+{:else if vault.status === "locked"}
+  <Unlock />
+{:else}
+  <Workspace />
+{/if}
 
 <style>
-  main {
+  .loading {
     height: 100%;
-    padding: 16px;
+    display: grid;
+    place-items: center;
+    color: var(--fg-muted);
   }
 </style>

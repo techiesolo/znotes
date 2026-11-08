@@ -39,6 +39,7 @@ pub fn configure<R: tauri::Runtime>(builder: tauri::Builder<R>) -> tauri::Builde
 pub fn run() {
     set_webkitgtk_env_before_threads_start();
     configure(tauri::Builder::default())
+        .plugin(tauri_plugin_dialog::init())
         .setup(|app| {
             watchdog::spawn(app.handle().clone());
             Ok(())

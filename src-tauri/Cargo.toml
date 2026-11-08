@@ -18,6 +18,7 @@ tauri-build = { version = "2.7.4" }
 serde.workspace = true
 serde_json.workspace = true
 tauri = { version = "2.12.5" }
+tauri-plugin-dialog = "2.8.4"
 znotes-core = { path = "../crates/znotes-core" }
 
 [dev-dependencies]

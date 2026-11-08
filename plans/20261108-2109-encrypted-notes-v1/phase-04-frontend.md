@@ -83,20 +83,20 @@ returned entity (no optimistic edits except editor text).
 10. Register dialog plugin in Rust, add capability, `pnpm check`, `pnpm test`.
 
 ## Todo list
-- [ ] api.ts + tests
-- [ ] vault state + locked-event handling
-- [ ] workspace state + debounce/flush tests
-- [ ] Unlock screen + tests
-- [ ] FolderTree with create/rename/delete
-- [ ] NoteList + TitleBar + Editor binding
-- [ ] Search + tests
-- [ ] Shortcuts, blur flush, light/dark
-- [ ] dialog plugin + capability
+- [x] api.ts + tests
+- [x] vault state + locked-event handling
+- [x] workspace state + debounce/flush tests
+- [x] Unlock screen + tests
+- [x] FolderTree with create/rename/delete
+- [x] NoteList + TitleBar + Editor binding
+- [x] Search + tests
+- [x] Shortcuts, blur flush, light/dark
+- [x] dialog plugin + capability
 
 ## Success criteria
-- [ ] `pnpm check` exits 0 (svelte-check, 0 errors)
-- [ ] `pnpm test` → vitest `Tests  N passed (N)`, N ≥ 12, 0 failed
-- [ ] `cargo build --workspace` exits 0 (dialog plugin wired)
+- [x] `pnpm check` exits 0 (svelte-check, 0 errors, 0 warnings)
+- [x] `pnpm test` → vitest `Tests  24 passed (24)`, 0 failed
+- [x] `cargo build --workspace` exits 0 (dialog plugin wired)
 - [ ] Manual: create vault → new folder → new note → type "tiếng việt" → wait 1 s → relaunch app → unlock → note present; search "tieng" finds it
 - [ ] Manual: ⌘/Ctrl+L returns to Unlock; reopening shows the same content
 - [ ] Manual: devtools Application tab shows empty localStorage/IndexedDB after a session
