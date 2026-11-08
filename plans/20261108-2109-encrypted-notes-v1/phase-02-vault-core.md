@@ -106,21 +106,21 @@ New dependency justification: `argon2`+`zeroize` (KDF & key hygiene, no stdlib e
 8. `cargo clippy --workspace -- -D warnings` and `cargo fmt --check` clean.
 
 ## Todo list
-- [ ] error.rs with serde contract + test
-- [ ] kdf.rs Argon2id + tests
-- [ ] meta.rs atomic sidecar + tests
-- [ ] schema.rs v1 DDL + FTS triggers + version gate
-- [ ] vault.rs create/open/change_password/Drop
-- [ ] tests/vault_lifecycle.rs
-- [ ] tests/leak.rs
-- [ ] clippy + fmt clean
+- [x] error.rs with serde contract + test
+- [x] kdf.rs Argon2id + tests
+- [x] meta.rs atomic sidecar + tests
+- [x] schema.rs v1 DDL + FTS triggers + version gate
+- [x] vault.rs create/open/change_password/Drop
+- [x] tests/vault_lifecycle.rs
+- [x] tests/leak.rs
+- [x] clippy + fmt clean
 
 ## Success criteria
-- [ ] `cargo test -p znotes-core` → `test result: ok.` with ≥ 12 passing, 0 failed, 0 ignored
-- [ ] `cargo clippy -p znotes-core -- -D warnings` exits 0
-- [ ] `strings <tempdir>/vault.znotes | grep ZNOTES_LEAK` returns nothing (covered by `tests/leak.rs`)
-- [ ] `hexdump -C vault.znotes | head -1` does NOT start with `SQLite format 3` (manual sanity check)
-- [ ] Open with correct password on this machine completes in < 1.5 s (`cargo test -- --nocapture` prints elapsed)
+- [x] `cargo test -p znotes-core` → `test result: ok.` with ≥ 12 passing, 0 failed, 0 ignored (33 passed across lib + 2 integration binaries)
+- [x] `cargo clippy -p znotes-core -- -D warnings` exits 0
+- [x] `strings <tempdir>/vault.znotes | grep ZNOTES_LEAK` returns nothing (covered by `tests/leak.rs`)
+- [x] `hexdump -C vault.znotes | head -1` does NOT start with `SQLite format 3` (automated in `vault_file_does_not_start_with_sqlite_magic`)
+- [x] Open with correct password on this machine completes in < 1.5 s (`cargo test -- --nocapture` prints elapsed) — 1.39 s in debug build; release will be faster, tuned in Phase 06
 
 ## Risk assessment
 | Risk | Likelihood | Impact | Mitigation |
