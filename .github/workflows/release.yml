@@ -1,0 +1,73 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-14
+            args: --target aarch64-apple-darwin
+          - os: ubuntu-24.04
+            args: ""
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file \
+            libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev perl
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ runner.os == 'macOS' && 'aarch64-apple-darwin' || '' }}
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: ". -> target"
+
+      - run: pnpm install --frozen-lockfile
+
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: "znotes ${{ github.ref_name }}"
+          releaseBody: |
+            Unsigned builds. macOS: run `xattr -d com.apple.quarantine znotes.app` after copying to Applications.
+            Verify downloads against the SHA-256 sums below.
+          releaseDraft: true
+          prerelease: false
+          args: ${{ matrix.args }}
+
+      - name: Check .deb dependencies
+        if: runner.os == 'Linux'
+        run: |
+          deb=$(ls target/release/bundle/deb/*.deb | head -1)
+          dpkg -I "$deb" | grep -E "Depends:.*libwebkit2gtk-4.1-0"
+
+      - name: Checksums
+        shell: bash
+        run: |
+          find target -path '*/bundle/*' \( -name '*.dmg' -o -name '*.deb' -o -name '*.AppImage' \) -print0 \
+            | xargs -0 shasum -a 256

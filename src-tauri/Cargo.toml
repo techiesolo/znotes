@@ -12,12 +12,12 @@ name = "znotes_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
-tauri-build = { version = "2.7.4" }
+tauri-build = { version = "2.7.4", features = [] }
 
 [dependencies]
 serde.workspace = true
 serde_json.workspace = true
-tauri = { version = "2.12.5" }
+tauri = { version = "2.12.5", features = [] }
 tauri-plugin-dialog = "2.8.4"
 znotes-core = { path = "../crates/znotes-core" }
 

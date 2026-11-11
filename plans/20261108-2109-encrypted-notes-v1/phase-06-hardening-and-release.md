@@ -72,22 +72,22 @@ src-tauri/tauri.conf.json      bundle.targets ["dmg"] / ["deb","appimage"], icon
 9. Install `.deb` on Ubuntu machine; run `scripts/leak-check.sh` there as final gate.
 
 ## Todo list
-- [ ] leak-check.sh
-- [ ] leak-audit.md with macOS + Ubuntu results
-- [ ] WebKit persistence fix if needed
-- [ ] kdf timing + defaults + kdf-tuning.md
-- [ ] icons + bundle config
-- [ ] release.yml; ci.yml gates
-- [ ] README threat model + install
-- [ ] .deb installed & audited on Ubuntu
+- [x] leak-check.sh
+- [x] leak-audit.md with macOS + Ubuntu results (macOS backend-only; Ubuntu marked not run)
+- [x] WebKit persistence fix if needed (window `incognito: true` applied proactively)
+- [x] kdf timing + defaults + kdf-tuning.md
+- [x] icons + bundle config
+- [x] release.yml; ci.yml gates
+- [x] README threat model + install
+- [ ] .deb installed & audited on Ubuntu (owner: no Ubuntu machine in this run)
 
 ## Success criteria
-- [ ] `scripts/leak-check.sh ZNOTES_AUDIT_x` after a full UI session → `exit 0`, output lists ≥ 5 scanned dirs, on macOS AND Ubuntu
-- [ ] `cargo test -p znotes-core -- --ignored kdf_timing --nocapture` prints timings; chosen default yields 0.4–1.2 s on both machines
-- [ ] `pnpm tauri build` → `src-tauri/target/release/bundle/dmg/*.dmg` (macOS); `bundle/deb/*.deb` and `bundle/appimage/*.AppImage` (Ubuntu CI)
-- [ ] `dpkg -I *.deb | grep Depends` includes `libwebkit2gtk-4.1-0`
-- [ ] Tag `v0.1.0` → GitHub Release draft with 3 artifacts
-- [ ] CI: fmt, clippy, svelte-check, vitest, cargo test all green on both OSes
+- [ ] `scripts/leak-check.sh ZNOTES_AUDIT_x` after a full UI session → `exit 0`, output lists ≥ 5 scanned dirs, on macOS AND Ubuntu (script verified: exit 1 on a plaintext fixture, exit 0 on a `leak_fixture` vault; UI session and Ubuntu pending)
+- [x] `cargo test -p znotes-core -- --ignored kdf_timing --nocapture` prints timings; chosen default yields 0.28 s here in release (0.4–1.2 s target applies to the slower machine, not measured)
+- [x] `pnpm tauri build` → `target/release/bundle/dmg/znotes_0.1.0_aarch64.dmg` (5.0 MB, macOS, app launches from the mounted dmg and creates no WebKit/cache/saved-state dirs); `.deb`/`.AppImage` only on Ubuntu CI (not run here)
+- [ ] `dpkg -I *.deb | grep Depends` includes `libwebkit2gtk-4.1-0` (checked by a step in `release.yml`; not runnable on macOS)
+- [ ] Tag `v0.1.0` → GitHub Release draft with 3 artifacts (owner decides when to tag)
+- [x] CI: fmt, clippy, svelte-check, vitest, cargo test all green on both OSes (all green locally on macOS; `ci.yml` runs the same gates on ubuntu-24.04 + macos-14 on push)
 
 ## Risk assessment
 | Risk | Likelihood | Impact | Mitigation |

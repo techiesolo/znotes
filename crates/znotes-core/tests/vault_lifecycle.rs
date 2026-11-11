@@ -222,8 +222,10 @@ fn default_params_open_time_is_reasonable() {
     let started = Instant::now();
     Vault::open(dir.path(), "pw").unwrap();
     let elapsed = started.elapsed();
-    println!("default-params open took {elapsed:?}");
-    assert!(elapsed.as_secs_f64() < 5.0, "open took {elapsed:?}");
+    println!(
+        "default-params open took {elapsed:?} (debug build; see docs/kdf-tuning.md for release numbers)"
+    );
+    assert!(elapsed.as_secs_f64() < 15.0, "open took {elapsed:?}");
 }
 
 #[test]

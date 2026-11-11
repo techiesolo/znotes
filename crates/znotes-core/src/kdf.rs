@@ -17,8 +17,8 @@ pub struct KdfParams {
 impl Default for KdfParams {
     fn default() -> Self {
         Self {
-            m_cost_kib: 64 * 1024,
-            t_cost: 3,
+            m_cost_kib: 128 * 1024,
+            t_cost: 4,
             p_cost: 1,
         }
     }

@@ -18,7 +18,8 @@
         "resizable": true,
         "fullscreen": false,
         "minWidth": 800,
-        "minHeight": 500
+        "minHeight": 500,
+        "incognito": true
       }
     ],
     "security": {
@@ -38,6 +39,18 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "linux": {
+      "deb": {
+        "depends": [
+          "libwebkit2gtk-4.1-0"
+        ]
+      }
+    },
+    "macOS": {
+      "minimumSystemVersion": "12.0"
+    },
+    "shortDescription": "Offline markdown notes, encrypted at rest",
+    "longDescription": "znotes keeps markdown notes in a single SQLCipher-encrypted vault file. Nothing readable is written to disk."
   }
 }
