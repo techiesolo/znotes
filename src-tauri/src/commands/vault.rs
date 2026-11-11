@@ -8,7 +8,7 @@ use znotes_core::{BackupPaths, Error, KdfParams, Result, Vault};
 use crate::state::{AppState, VaultInfo, VaultStatus};
 use crate::watchdog;
 
-#[tauri::command]
+#[tauri::command(async)]
 pub fn vault_create(
     state: State<'_, AppState>,
     dir: String,
@@ -18,7 +18,7 @@ pub fn vault_create(
     Ok(state.set_vault(vault))
 }
 
-#[tauri::command]
+#[tauri::command(async)]
 pub fn vault_open(state: State<'_, AppState>, dir: String, password: String) -> Result<VaultInfo> {
     let vault = Vault::open(Path::new(&dir), &password)?;
     Ok(state.set_vault(vault))
@@ -37,12 +37,12 @@ pub fn vault_status(state: State<'_, AppState>) -> VaultStatus {
     state.status()
 }
 
-#[tauri::command]
+#[tauri::command(async)]
 pub fn vault_backup(state: State<'_, AppState>, dest_dir: String) -> Result<BackupPaths> {
     state.with_vault(|v| v.backup_to(Path::new(&dest_dir), &timestamp()))
 }
 
-#[tauri::command]
+#[tauri::command(async)]
 pub fn vault_change_password(
     state: State<'_, AppState>,
     current: String,
@@ -51,7 +51,7 @@ pub fn vault_change_password(
     state.with_vault_mut(|v| v.change_password(&current, &new))
 }
 
-#[tauri::command]
+#[tauri::command(async)]
 pub fn note_export_md(state: State<'_, AppState>, id: i64, dest_path: String) -> Result<()> {
     let note = state.with_vault(|v| notes::get(v.conn(), id))?;
     let dest = Path::new(&dest_path);

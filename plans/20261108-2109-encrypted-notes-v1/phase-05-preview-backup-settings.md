@@ -8,8 +8,8 @@
 ## Overview
 - Date: 2026-11-08
 - Priority: medium
-- Implementation status: pending
-- Review status: not-reviewed
+- Implementation status: done
+- Review status: reviewed; post-review fixes unreviewed
 - Description: Rounds out v1 features: sanitized markdown preview toggle, encrypted backup (file
   copy), change password, explicit plaintext export of one note, and a small plaintext settings
   file (last vault dir, autolock minutes).

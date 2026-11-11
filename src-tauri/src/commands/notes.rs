@@ -10,6 +10,11 @@ pub fn note_list(state: State<'_, AppState>, folder_id: Option<i64>) -> Result<V
 }
 
 #[tauri::command]
+pub fn note_list_all(state: State<'_, AppState>) -> Result<Vec<NoteSummary>> {
+    state.with_vault(|v| notes::list_all(v.conn()))
+}
+
+#[tauri::command]
 pub fn note_get(state: State<'_, AppState>, id: i64) -> Result<Note> {
     state.with_vault(|v| notes::get(v.conn(), id))
 }

@@ -29,6 +29,7 @@ pub fn configure<R: tauri::Runtime>(builder: tauri::Builder<R>) -> tauri::Builde
             commands::folders::folder_rename,
             commands::folders::folder_delete,
             commands::notes::note_list,
+            commands::notes::note_list_all,
             commands::notes::note_get,
             commands::notes::note_create,
             commands::notes::note_update,

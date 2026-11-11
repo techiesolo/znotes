@@ -8,8 +8,8 @@
 ## Overview
 - Date: 2026-11-08
 - Priority: high
-- Implementation status: pending
-- Review status: not-reviewed
+- Implementation status: done
+- Review status: reviewed; post-review fixes unreviewed
 - Description: Pure-Rust `znotes-core` vault lifecycle: create/open/lock, Argon2id KDF, plaintext
   meta sidecar, schema + migrations, error type, and the automated "no plaintext on disk" test.
   No Tauri dependency. Everything in this phase is unit-testable with `tempfile`.

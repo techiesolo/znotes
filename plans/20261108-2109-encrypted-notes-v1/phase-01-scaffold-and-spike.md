@@ -8,8 +8,8 @@
 ## Overview
 - Date: 2026-11-08
 - Priority: high
-- Implementation status: pending
-- Review status: not-reviewed
+- Implementation status: done
+- Review status: reviewed; post-review fixes unreviewed
 - Description: Stand up the repo skeleton (cargo workspace + Vite/Svelte 5 + Tauri 2), prove the
   two riskiest unknowns early: SQLCipher compiles & links on both OSes, and the WebKitGTK webview
   renders a CodeMirror editor correctly on the real Ubuntu machine. This is the Tauri-vs-Electron gate.

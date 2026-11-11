@@ -10,7 +10,7 @@ beforeEach(() => {
   vi.useFakeTimers();
   workspace.reset();
   backend = installFakeBackend({ notes: [note(1, { body: "tiếng việt" })] });
-  backend.searchHits = [{ id: 1, folder_id: null, title: "Note 1", snippet: "…[tiếng] việt…" }];
+  backend.searchHits = [{ id: 1, folder_id: null, title: "Note 1", snippet: "…\u0002tiếng\u0003 việt…" }];
 });
 
 afterEach(() => {
@@ -31,7 +31,7 @@ describe("Search", () => {
     const option = await screen.findByRole("option");
     expect(option).toHaveTextContent("Note 1");
     expect(option.querySelector("mark")).toHaveTextContent("tiếng");
-    expect(option.textContent).not.toContain("[");
+    expect(option.textContent).not.toContain("\u0002");
 
     await fireEvent.click(option);
     await vi.advanceTimersByTimeAsync(0);

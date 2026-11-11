@@ -8,8 +8,8 @@
 ## Overview
 - Date: 2026-11-08
 - Priority: high
-- Implementation status: pending
-- Review status: not-reviewed
+- Implementation status: done
+- Review status: reviewed; post-review fixes unreviewed
 - Description: Usable app: create/unlock screen, three-pane layout (folder tree · note list ·
   editor), CodeMirror 6 markdown editing with debounced save, search box, lock button, and
   reaction to `vault-locked`. Svelte 5 runes, no router, no UI framework.

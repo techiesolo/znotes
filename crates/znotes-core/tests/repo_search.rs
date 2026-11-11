@@ -41,8 +41,8 @@ fn diacritics_insensitive_and_prefix() {
     let hits = search::search(v.conn(), "ma hoa", 10).unwrap();
     assert_eq!(hits.len(), 1);
     assert!(
-        hits[0].snippet.contains('['),
-        "snippet should mark the match: {}",
+        hits[0].snippet.contains("\u{2}mã\u{3} \u{2}hóa\u{3}"),
+        "snippet should mark the match with control chars: {:?}",
         hits[0].snippet
     );
     let hits = search::search(v.conn(), "Hô", 10).unwrap();
@@ -122,6 +122,16 @@ fn title_matches_rank_above_body_matches() {
     let hits = search::search(c, "rust", 10).unwrap();
     assert_eq!(hits.len(), 2);
     assert_eq!(hits[0].id, in_title.id);
+}
+
+#[test]
+fn literal_brackets_in_body_are_not_treated_as_highlights() {
+    let (_d, v) = vault();
+    let c = v.conn();
+    let n = notes::create(c, None, "links").unwrap();
+    notes::update(c, n.id, "links", "see [docs](http://x) now").unwrap();
+    let hits = search::search(c, "see", 10).unwrap();
+    assert_eq!(hits[0].snippet, "\u{2}see\u{3} [docs](http://x) now");
 }
 
 #[test]

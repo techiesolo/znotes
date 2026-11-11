@@ -81,6 +81,7 @@ export const api = {
   folderDelete: (id: number) => invoke<void>("folder_delete", { id }),
 
   noteList: (folderId: number | null) => invoke<NoteSummary[]>("note_list", { folderId }),
+  noteListAll: () => invoke<NoteSummary[]>("note_list_all"),
   noteGet: (id: number) => invoke<Note>("note_get", { id }),
   noteCreate: (folderId: number | null, title: string) =>
     invoke<Note>("note_create", { folderId, title }),

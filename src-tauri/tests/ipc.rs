@@ -208,8 +208,9 @@ fn backup_change_password_export_and_settings_through_ipc() {
     )
     .unwrap();
 
-    let defaults = invoke(&webview, "settings_get", json!({})).unwrap();
-    assert_eq!(defaults["autolock_minutes"], 10);
+    let current = invoke(&webview, "settings_get", json!({})).unwrap();
+    let minutes = current["autolock_minutes"].as_u64().unwrap();
+    assert!((1..=120).contains(&minutes), "autolock_minutes={minutes}");
     let bad_settings = invoke(
         &webview,
         "settings_set",

@@ -16,10 +16,31 @@ afterEach(() => {
 });
 
 describe("workspace", () => {
-  it("loads folders and root notes", async () => {
+  it("loads folders and every note when no folder is selected", async () => {
     await workspace.load();
-    expect(workspace.notes.map((n) => n.id)).toEqual([1]);
-    expect(callsTo(backend, "note_list")[0].args).toEqual({ folderId: null });
+    expect(workspace.notes.map((n) => n.id).sort()).toEqual([1, 2]);
+    expect(callsTo(backend, "note_list_all")).toHaveLength(1);
+    expect(callsTo(backend, "note_list")).toHaveLength(0);
+  });
+
+  it("lists only the selected folder's notes", async () => {
+    await workspace.selectFolder(9);
+    expect(workspace.notes.map((n) => n.id)).toEqual([2]);
+    expect(callsTo(backend, "note_list")[0].args).toEqual({ folderId: 9 });
+  });
+
+  it("keeps the draft title untouched after an autosave normalises it", async () => {
+    await workspace.load();
+    await workspace.selectNote(1);
+    workspace.updateDraft("Hello ", "body 1");
+    await vi.advanceTimersByTimeAsync(SAVE_DEBOUNCE_MS);
+    expect(backend.notes.get(1)?.title).toBe("Hello");
+    expect(workspace.current?.title).toBe("Hello ");
+    expect(workspace.notes.find((n) => n.id === 1)?.title).toBe("Hello");
+    workspace.updateDraft("", "body 1");
+    await vi.advanceTimersByTimeAsync(SAVE_DEBOUNCE_MS);
+    expect(workspace.current?.title).toBe("");
+    expect(backend.notes.get(1)?.title).toBe("Untitled");
   });
 
   it("coalesces rapid edits into one save after the debounce", async () => {

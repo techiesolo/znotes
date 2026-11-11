@@ -22,14 +22,18 @@ class WorkspaceState {
   async load(): Promise<void> {
     await this.guard(async () => {
       this.folders = await api.folderList();
-      this.notes = await api.noteList(this.selectedFolderId);
+      this.notes = await this.listVisibleNotes();
     });
   }
 
   async refreshNotes(): Promise<void> {
     await this.guard(async () => {
-      this.notes = await api.noteList(this.selectedFolderId);
+      this.notes = await this.listVisibleNotes();
     });
+  }
+
+  private listVisibleNotes(): Promise<NoteSummary[]> {
+    return this.selectedFolderId === null ? api.noteListAll() : api.noteList(this.selectedFolderId);
   }
 
   async selectFolder(id: number | null): Promise<void> {
@@ -81,7 +85,7 @@ class WorkspaceState {
       try {
         const saved = await api.noteUpdate(id, title, body);
         if (this.current?.id === id) {
-          this.current = { ...this.current, title: saved.title, updated_at: saved.updated_at };
+          this.current = { ...this.current, updated_at: saved.updated_at };
         }
         this.notes = this.notes
           .map((n) => (n.id === id ? summaryOf(saved) : n))

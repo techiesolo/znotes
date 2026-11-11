@@ -33,7 +33,7 @@ pub fn search(conn: &Connection, raw: &str, limit: u32) -> Result<Vec<SearchHit>
     };
     let limit = limit.clamp(1, MAX_LIMIT);
     let mut stmt = conn.prepare(
-        "SELECT n.id, n.folder_id, n.title, snippet(notes_fts, 1, '[', ']', '…', 12)
+        "SELECT n.id, n.folder_id, n.title, snippet(notes_fts, 1, char(2), char(3), '…', 12)
          FROM notes_fts
          JOIN notes n ON n.id = notes_fts.rowid
          WHERE notes_fts MATCH ?1

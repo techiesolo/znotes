@@ -86,9 +86,7 @@ impl Vault {
         let new_meta = self.meta.with_new_salt(&salt);
         let key = kdf::derive(new.as_bytes(), &salt, &new_meta.kdf)?;
         meta::write_tmp(&self.dir, &new_meta)?;
-        let hex = kdf::to_hex_key(&key);
-        self.conn
-            .execute_batch(&format!("PRAGMA rekey = \"x'{}'\";", *hex))?;
+        self.conn.execute_batch(&key_pragma("rekey", &key))?;
         meta::promote_tmp(&self.dir)?;
         self.meta = new_meta;
         Ok(())
@@ -156,9 +154,7 @@ fn open_connection(
         flags |= OpenFlags::SQLITE_OPEN_CREATE;
     }
     let conn = Connection::open_with_flags(db_path, flags)?;
-    let hex = kdf::to_hex_key(key);
-    debug_assert!(hex.len() == 64 && hex.chars().all(|c| c.is_ascii_hexdigit()));
-    conn.execute_batch(&format!("PRAGMA key = \"x'{}'\";", *hex))?;
+    conn.execute_batch(&key_pragma("key", key))?;
     verify_key(&conn)?;
     conn.execute_batch(
         "PRAGMA cipher_memory_security = ON;
@@ -167,6 +163,18 @@ fn open_connection(
          PRAGMA synchronous = FULL;",
     )?;
     Ok(conn)
+}
+
+fn key_pragma(name: &str, key: &Zeroizing<[u8; KEY_LEN]>) -> Zeroizing<String> {
+    let hex = kdf::to_hex_key(key);
+    debug_assert!(hex.len() == 64 && hex.chars().all(|c| c.is_ascii_hexdigit()));
+    let mut statement = Zeroizing::new(String::with_capacity(80));
+    statement.push_str("PRAGMA ");
+    statement.push_str(name);
+    statement.push_str(" = \"x'");
+    statement.push_str(&hex);
+    statement.push_str("'\";");
+    statement
 }
 
 fn verify_key(conn: &Connection) -> Result<()> {

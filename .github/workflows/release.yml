@@ -55,7 +55,7 @@ jobs:
           releaseName: "znotes ${{ github.ref_name }}"
           releaseBody: |
             Unsigned builds. macOS: run `xattr -d com.apple.quarantine znotes.app` after copying to Applications.
-            Verify downloads against the SHA-256 sums below.
+            SHA-256 sums of the artifacts are printed by the "Checksums" step of the release workflow run.
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}

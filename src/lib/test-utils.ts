@@ -112,6 +112,8 @@ export function installFakeBackend(seed: { notes?: Note[]; folders?: Folder[] } 
       case "folder_delete":
         backend.folders.delete(args.id as number);
         return null;
+      case "note_list_all":
+        return [...backend.notes.values()].map(summary).sort((a, b) => b.updated_at - a.updated_at);
       case "note_list":
         return [...backend.notes.values()]
           .filter((n) => n.folder_id === (args.folderId ?? null))

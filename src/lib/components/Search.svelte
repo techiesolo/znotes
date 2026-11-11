@@ -58,10 +58,12 @@
 
   function parts(snippet: string): { text: string; mark: boolean }[] {
     return snippet
-      .split(/(\[[^\]]*\])/)
+      .split(/(\u0002[^\u0003]*\u0003)/)
       .filter((s) => s.length)
       .map((s) =>
-        s.startsWith("[") && s.endsWith("]") ? { text: s.slice(1, -1), mark: true } : { text: s, mark: false },
+        s.startsWith("\u0002") && s.endsWith("\u0003")
+          ? { text: s.slice(1, -1), mark: true }
+          : { text: s, mark: false },
       );
   }
 </script>

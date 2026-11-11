@@ -71,6 +71,11 @@ fn list_filters_by_folder_and_orders_by_updated_desc() {
     let at_root = notes::list(c, None).unwrap();
     assert_eq!(at_root.len(), 1);
     assert_eq!(at_root[0].title, "root");
+    let all = notes::list_all(c).unwrap();
+    assert_eq!(
+        all.iter().map(|n| n.id).collect::<Vec<_>>(),
+        vec![_root.id, b.id, a.id]
+    );
 }
 
 #[test]

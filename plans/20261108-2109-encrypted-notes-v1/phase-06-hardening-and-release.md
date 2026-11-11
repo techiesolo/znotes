@@ -8,8 +8,8 @@
 ## Overview
 - Date: 2026-11-08
 - Priority: high
-- Implementation status: pending
-- Review status: not-reviewed
+- Implementation status: done
+- Review status: reviewed; post-review fixes unreviewed
 - Description: Prove the core promise end-to-end on real OS paths (not just the vault dir), pick
   Argon2 parameters from measurements, and produce installers from CI on tag push.
 

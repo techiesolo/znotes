@@ -27,12 +27,12 @@ Out (deliberately):
 ## Phases
 | # | Phase | Status | File |
 |---|---|---|---|
-| 01 | Scaffold & platform spike (Tauri + Svelte + CM6 + SQLCipher compiles, runs on Ubuntu) | pending | [phase-01-scaffold-and-spike.md](phase-01-scaffold-and-spike.md) |
-| 02 | Vault core crate (KDF, meta sidecar, open/create/lock, schema, leak test) | pending | [phase-02-vault-core.md](phase-02-vault-core.md) |
-| 03 | Repositories + Tauri commands + state + auto-lock | pending | [phase-03-repos-and-commands.md](phase-03-repos-and-commands.md) |
-| 04 | Frontend: unlock, folder tree, note list, editor, search | pending | [phase-04-frontend.md](phase-04-frontend.md) |
-| 05 | Preview, backup, change password, export, settings | pending | [phase-05-preview-backup-settings.md](phase-05-preview-backup-settings.md) |
-| 06 | Leak audit, Argon2 tuning, packaging & release CI | pending | [phase-06-hardening-and-release.md](phase-06-hardening-and-release.md) |
+| 01 | Scaffold & platform spike (Tauri + Svelte + CM6 + SQLCipher compiles, runs on Ubuntu) | done | [phase-01-scaffold-and-spike.md](phase-01-scaffold-and-spike.md) |
+| 02 | Vault core crate (KDF, meta sidecar, open/create/lock, schema, leak test) | done | [phase-02-vault-core.md](phase-02-vault-core.md) |
+| 03 | Repositories + Tauri commands + state + auto-lock | done | [phase-03-repos-and-commands.md](phase-03-repos-and-commands.md) |
+| 04 | Frontend: unlock, folder tree, note list, editor, search | done | [phase-04-frontend.md](phase-04-frontend.md) |
+| 05 | Preview, backup, change password, export, settings | done | [phase-05-preview-backup-settings.md](phase-05-preview-backup-settings.md) |
+| 06 | Leak audit, Argon2 tuning, packaging & release CI | done | [phase-06-hardening-and-release.md](phase-06-hardening-and-release.md) |
 
 Status: pending | done | blocked
 

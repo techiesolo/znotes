@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { EditorState } from "@codemirror/state";
   import { EditorView, keymap, placeholder as cmPlaceholder } from "@codemirror/view";
   import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands";
@@ -31,7 +32,7 @@
     ".cm-activeLine": { backgroundColor: "transparent" },
   });
 
-  $effect(() => {
+  onMount(() => {
     view = new EditorView({
       parent: host,
       state: EditorState.create({
@@ -50,7 +51,10 @@
         ],
       }),
     });
-    return () => view?.destroy();
+    return () => {
+      view?.destroy();
+      view = undefined;
+    };
   });
 
   $effect(() => {

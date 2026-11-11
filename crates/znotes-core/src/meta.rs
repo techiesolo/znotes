@@ -1,4 +1,5 @@
-use std::fs;
+use std::fs::{self, File};
+use std::io::Write;
 use std::path::{Path, PathBuf};
 
 use base64::Engine;
@@ -85,12 +86,19 @@ fn load_file(path: &Path) -> Result<VaultMeta> {
 
 pub fn write_tmp(dir: &Path, meta: &VaultMeta) -> Result<()> {
     let json = serde_json::to_string_pretty(meta).map_err(std::io::Error::other)?;
-    fs::write(meta_tmp_path(dir), json)?;
-    Ok(())
+    let mut file = File::create(meta_tmp_path(dir))?;
+    file.write_all(json.as_bytes())?;
+    file.sync_all()?;
+    sync_dir(dir)
 }
 
 pub fn promote_tmp(dir: &Path) -> Result<()> {
     fs::rename(meta_tmp_path(dir), meta_path(dir))?;
+    sync_dir(dir)
+}
+
+fn sync_dir(dir: &Path) -> Result<()> {
+    File::open(dir)?.sync_all()?;
     Ok(())
 }
 

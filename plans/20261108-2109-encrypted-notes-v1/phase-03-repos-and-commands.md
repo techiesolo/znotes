@@ -8,8 +8,8 @@
 ## Overview
 - Date: 2026-11-08
 - Priority: high
-- Implementation status: pending
-- Review status: not-reviewed
+- Implementation status: done
+- Review status: reviewed; post-review fixes unreviewed
 - Description: CRUD for folders and notes, FTS5 search, and the IPC surface the frontend will
   call. `AppState` holds at most one open vault behind a mutex; an idle watchdog locks it and
   emits `vault-locked`.

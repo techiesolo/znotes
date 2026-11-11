@@ -52,6 +52,21 @@ pub fn list(conn: &Connection, folder_id: Option<i64>) -> Result<Vec<NoteSummary
     Ok(rows.collect::<rusqlite::Result<_>>()?)
 }
 
+pub fn list_all(conn: &Connection) -> Result<Vec<NoteSummary>> {
+    let mut stmt = conn.prepare(
+        "SELECT id, folder_id, title, updated_at FROM notes ORDER BY updated_at DESC, id DESC",
+    )?;
+    let rows = stmt.query_map([], |row| {
+        Ok(NoteSummary {
+            id: row.get(0)?,
+            folder_id: row.get(1)?,
+            title: row.get(2)?,
+            updated_at: row.get(3)?,
+        })
+    })?;
+    Ok(rows.collect::<rusqlite::Result<_>>()?)
+}
+
 pub fn get(conn: &Connection, id: i64) -> Result<Note> {
     conn.query_row(
         "SELECT id, folder_id, title, body, created_at, updated_at FROM notes WHERE id = ?1",
